@@ -32,7 +32,6 @@
 
 @end
 
-
 #define THColorRGB(rgb)    [UIColor colorWithRed:(rgb)/255.0 green:(rgb)/255.0 blue:(rgb)/255.0 alpha:1.0]
 
 @implementation THDatePickerView
@@ -117,25 +116,25 @@
 - (void)saveBtnClick {
     NSLog(@"点击了保存");
     
-    NSInteger index = [self compareDate:[self.timeArr componentsJoinedByString:@","] withDate:[NSString stringWithFormat:@"%@,%@,%@,%@,%@", self.year, self.month, self.day, self.hour, self.minute]];
-    switch (index) {
-        case -1: {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"面试时间小于当前时间，请重新选择" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
-        } break;
-        case 0:
-        case 1: {
-            if (self.minute.length == 2) {
-                self.selectStr = [NSString stringWithFormat:@"%ld-%ld-%ld  %ld:0%ld", [self.year integerValue], [self.month integerValue], [self.day integerValue], [self.hour integerValue], [self.minute integerValue]];
-            } else {
-                self.selectStr = [NSString stringWithFormat:@"%ld-%ld-%ld  %ld:%ld", [self.year integerValue], [self.month integerValue], [self.day integerValue], [self.hour integerValue], [self.minute integerValue]];
-            }
+//    NSInteger index = [self compareDate:[self.timeArr componentsJoinedByString:@","] withDate:[NSString stringWithFormat:@"%@,%@,%@,%@,%@", self.year, self.month, self.day, self.hour, self.minute]];
+//    switch (index) {
+//        case -1: {
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"面试时间小于当前时间，请重新选择" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//            [alert show];
+//        } break;
+//        case 0:
+//        case 1: {
+//            if (self.minute.length == 2) {
+//                self.selectStr = [NSString stringWithFormat:@"%ld-%ld-%ld  %ld:0%ld", [self.year integerValue], [self.month integerValue], [self.day integerValue], [self.hour integerValue], [self.minute integerValue]];
+//            } else {
+//                self.selectStr = [NSString stringWithFormat:@"%ld-%ld-%ld  %ld:%ld", [self.year integerValue], [self.month integerValue], [self.day integerValue], [self.hour integerValue], [self.minute integerValue]];
+//            }
             if ([self.delegate respondsToSelector:@selector(datePickerViewSaveBtnClickDelegate:)]) {
                 [self.delegate datePickerViewSaveBtnClickDelegate:self.selectStr];
             }
-        } break;
-        default: break;
-    }
+//        } break;
+//        default: break;
+//    }
 }
 /// 取消按钮点击方法
 - (void)cancelBtnClick {

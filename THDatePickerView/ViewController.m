@@ -13,6 +13,7 @@
 @interface ViewController () <THDatePickerViewDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *timerLbl;
 @property (weak, nonatomic) THDatePickerView *dateView;
+@property (strong, nonatomic) UIButton *btn;
 @end
 
 @implementation ViewController
@@ -20,8 +21,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.btn = [[UIButton alloc] initWithFrame:self.view.bounds];
+    self.btn.backgroundColor = [UIColor blackColor];
+    self.btn.hidden = YES;
+    self.btn.alpha = 0.3;
+    [self.view addSubview:self.btn];
     
-    THDatePickerView *dateView = [[THDatePickerView alloc] initWithFrame:self.view.bounds];
+    
+    THDatePickerView *dateView = [[THDatePickerView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 300)];
     dateView.delegate = self;
     dateView.title = @"请选择时间";
     [self.view addSubview:dateView];
@@ -30,7 +37,11 @@
 }
 
 - (IBAction)timerBrnClick:(id)sender {
-    [self.dateView show];
+    self.btn.hidden = NO;
+    [UIView animateWithDuration:0.3 animations:^{
+        self.dateView.frame = CGRectMake(0, self.view.frame.size.height - 300, self.view.frame.size.width, 300);
+        [self.dateView show];
+    }];
 }
 
 
@@ -43,6 +54,11 @@
     
     NSLog(@"保存点击");
     self.timerLbl.text = timer;
+    
+    self.btn.hidden = YES;
+    [UIView animateWithDuration:0.3 animations:^{
+        self.dateView.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 300);
+    }];
 }
 
 /**
@@ -50,6 +66,10 @@
  */
 - (void)datePickerViewCancelBtnClickDelegate {
     NSLog(@"取消点击");
+    self.btn.hidden = YES;
+    [UIView animateWithDuration:0.3 animations:^{
+        self.dateView.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 300);
+    }];
 }
 
 @end
