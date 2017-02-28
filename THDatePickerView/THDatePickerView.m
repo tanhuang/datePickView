@@ -151,7 +151,7 @@
 
 /// UIPickerView返回每组多少条数据
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
-    return  [self.dataArray[component] count];
+    return  16384;
 }
 
 /// UIPickerView选择哪一行
@@ -320,7 +320,7 @@
 
 /// UIPickerView返回每一行数据
 - (nullable NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
-    return  self.dataArray[component][row];
+    return  [self.dataArray[component] objectAtIndex:row%[self.dataArray[component] count]];
 }
 /// UIPickerView返回每一行的高度
 - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component {
@@ -331,9 +331,16 @@
     UILabel *myView = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width, 44)];
     myView.font = [UIFont systemFontOfSize:15];
     myView.textAlignment = NSTextAlignmentCenter;
-    myView.text = self.dataArray[component][row];
+    myView.text = [self.dataArray[component] objectAtIndex:row%[self.dataArray[component] count]];
     return myView;
 }
+
+- (void)pickerViewLoaded:(NSInteger)component row:(NSInteger)row{
+    NSUInteger max = 16384;
+    NSUInteger base10 = (max/2)-(max/2)%row;
+    [self.pickerView selectRow:[self.pickerView selectedRowInComponent:component] % row + base10 inComponent:component animated:NO];
+}
+
 
 /// 获取年份
 - (NSMutableArray *)yearArr {

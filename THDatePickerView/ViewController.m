@@ -32,10 +32,10 @@
     dateView.delegate = self;
     dateView.title = @"请选择时间";
     [self.view addSubview:dateView];
-    
     self.dateView = dateView;
 }
 
+// 显示
 - (IBAction)timerBrnClick:(id)sender {
     self.btn.hidden = NO;
     [UIView animateWithDuration:0.3 animations:^{
@@ -44,14 +44,13 @@
     }];
 }
 
-
+#pragma mark - THDatePickerViewDelegate
 /**
  保存按钮代理方法
  
  @param timer 选择的数据
  */
 - (void)datePickerViewSaveBtnClickDelegate:(NSString *)timer {
-    
     NSLog(@"保存点击");
     self.timerLbl.text = timer;
     

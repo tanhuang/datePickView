@@ -29,6 +29,7 @@
 @property (copy, nonatomic) NSString *title;
 @property (weak, nonatomic) id <THDatePickerViewDelegate> delegate;
 
+/// 显示
 - (void)show;
 
 @end
