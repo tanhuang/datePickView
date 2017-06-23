@@ -151,21 +151,21 @@
 
 /// UIPickerView返回每组多少条数据
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
-    return  16384;
+    return  [self.dataArray[component] count] * 200;
 }
 
 /// UIPickerView选择哪一行
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     switch (component) {
         case 0: { // 年
-            if ([self.yearArr[row] integerValue] < [self.timeArr[component] integerValue]) {
+            if ([self.yearArr[row%[self.dataArray[component] count]] integerValue] < [self.timeArr[component] integerValue]) {
                 [pickerView selectRow:[self.dataArray[component] indexOfObject:self.timeArr[component]] inComponent:component animated:YES];
             } else {
-                self.year = self.yearArr[row];
+                self.year = self.yearArr[row%[self.dataArray[component] count]];
                 /// 根据当前选择的年份和月份获取当月的天数
                 NSString *dayStr = [self getDayNumber:[self.year integerValue] month:[self.month integerValue]];
                 if (self.dayArr.count > [dayStr integerValue]) {
-                    if (self.day > [dayStr integerValue]) {
+                    if (self.day.integerValue > [dayStr integerValue]) {
                         [pickerView selectRow:[self.dataArray[2] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:2 animated:YES];
                         self.day = [dayStr stringByAppendingString:@"日"];
                     }
@@ -176,12 +176,12 @@
             // 如果选择年大于当前年 就直接赋值月
             if ([self.year integerValue] > [self.timeArr[0] integerValue]) {
                 
-                self.month = self.monthArr[row];
+                self.month = self.monthArr[row%[self.dataArray[component] count]];
                 
                 /// 根据当前选择的年份和月份获取当月的天数
                 NSString *dayStr = [self getDayNumber:[self.year integerValue] month:[self.month integerValue]];
                 if (self.dayArr.count > [dayStr integerValue]) {
-                    if (self.day > [dayStr integerValue]) {
+                    if (self.day.integerValue > [dayStr integerValue]) {
                         [pickerView selectRow:[self.dataArray[2] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:2 animated:YES];
                         self.day = [dayStr stringByAppendingString:@"日"];
                     }
@@ -189,16 +189,16 @@
                 // 如果选择的年等于当前年，就判断月份
             } else if ([self.year integerValue] == [self.timeArr[0] integerValue]) {
                 // 如果选择的月份小于当前月份 就刷新到当前月份
-                if ([self.monthArr[row] integerValue] < [self.timeArr[component] integerValue]) {
+                if ([self.monthArr[row%[self.dataArray[component] count]] integerValue] < [self.timeArr[component] integerValue]) {
                     [pickerView selectRow:[self.dataArray[component] indexOfObject:[NSString stringWithFormat:@"%ld月", [self.timeArr[component] integerValue]]] inComponent:component animated:YES];
                     // 如果选择的月份大于当前月份，就直接赋值月份
                 } else {
-                    self.month = self.monthArr[row];
+                    self.month = self.monthArr[row%[self.dataArray[component] count]];
                     
                     /// 根据当前选择的年份和月份获取当月的天数
                     NSString *dayStr = [self getDayNumber:[self.year integerValue] month:[self.month integerValue]];
-                    if (self.dayArr.count > [dayStr integerValue]) {
-                        if (self.day > [dayStr integerValue]) {
+                    if (self.dayArr.count > dayStr.integerValue) {
+                        if (self.day.integerValue > dayStr.integerValue) {
                             [pickerView selectRow:[self.dataArray[2] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:2 animated:YES];
                             self.day = [dayStr stringByAppendingString:@"日"];
                         }
@@ -213,10 +213,10 @@
             NSLog(@"%ld", self.dayArr.count);
             if ([self.year integerValue] > [self.timeArr[0] integerValue]) {
                 if (self.dayArr.count <= [dayStr integerValue]) {
-                    self.day = self.dayArr[row];
+                    self.day = self.dayArr[row%[self.dataArray[component] count]];
                 } else {
-                    if ([self.dayArr[row] integerValue] <= [dayStr integerValue]) {
-                        self.day = self.dayArr[row];
+                    if ([self.dayArr[row%[self.dataArray[component] count]] integerValue] <= [dayStr integerValue]) {
+                        self.day = self.dayArr[row%[self.dataArray[component] count]];
                     } else {
                         [pickerView selectRow:[self.dataArray[component] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:component animated:YES];
                     }
@@ -226,10 +226,10 @@
                 // 如果选择的月份大于当前月份 就直接复制
                 if ([self.month integerValue] > [self.timeArr[1] integerValue]) {
                     if (self.dayArr.count <= [dayStr integerValue]) {
-                        self.day = self.dayArr[row];
+                        self.day = self.dayArr[row%[self.dataArray[component] count]];
                     } else {
-                        if ([self.dayArr[row] integerValue] <= [dayStr integerValue]) {
-                            self.day = self.dayArr[row];
+                        if ([self.dayArr[row%[self.dataArray[component] count]] integerValue] <= [dayStr integerValue]) {
+                            self.day = self.dayArr[row%[self.dataArray[component] count]];
                         } else {
                             [pickerView selectRow:[self.dataArray[component] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:component animated:YES];
                         }
@@ -237,15 +237,15 @@
                     // 如果选择的月份等于当前月份，就判断日
                 } else if ([self.month integerValue] == [self.timeArr[1] integerValue]) {
                     // 如果选择的日小于当前日，就刷新到当前日
-                    if ([self.dayArr[row] integerValue] < [self.timeArr[component] integerValue]) {
+                    if ([self.dayArr[row%[self.dataArray[component] count]] integerValue] < [self.timeArr[component] integerValue]) {
                         [pickerView selectRow:[self.dataArray[component] indexOfObject:self.timeArr[component]] inComponent:component animated:YES];
                         // 如果选择的日大于当前日，就复制日
                     } else {
                         if (self.dayArr.count <= [dayStr integerValue]) {
-                            self.day = self.dayArr[row];
+                            self.day = self.dayArr[row%[self.dataArray[component] count]];
                         } else {
-                            if ([self.dayArr[row] integerValue] <= [dayStr integerValue]) {
-                                self.day = self.dayArr[row];
+                            if ([self.dayArr[row%[self.dataArray[component] count]] integerValue] <= [dayStr integerValue]) {
+                                self.day = self.dayArr[row%[self.dataArray[component] count]];
                             } else {
                                 [pickerView selectRow:[self.dataArray[component] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:component animated:YES];
                             }
@@ -257,25 +257,25 @@
         case 3: { // 时
             // 如果选择年大于当前年 就直接赋值时
             if ([self.year integerValue] > [self.timeArr[0] integerValue]) {
-                self.hour = self.hourArr[row];
+                self.hour = self.hourArr[row%[self.dataArray[component] count]];
                 // 如果选择的年等于当前年，就判断月份
             } else if ([self.year integerValue] == [self.timeArr[0] integerValue]) {
                 // 如果选择的月份大于当前月份 就直接复制时
                 if ([self.month integerValue] > [self.timeArr[1] integerValue]) {
-                    self.hour = self.hourArr[row];
+                    self.hour = self.hourArr[row%[self.dataArray[component] count]];
                     // 如果选择的月份等于当前月份，就判断日
                 } else if ([self.month integerValue] == [self.timeArr[1] integerValue]) {
                     // 如果选择的日大于当前日，就直接复制时
                     if ([self.day integerValue] > [self.timeArr[2] integerValue]) {
-                        self.hour = self.hourArr[row];
+                        self.hour = self.hourArr[row%[self.dataArray[component] count]];
                         // 如果选择的日等于当前日，就判断时
                     } else if ([self.day integerValue] == [self.timeArr[2] integerValue]) {
                         // 如果选择的时小于当前时，就刷新到当前时
-                        if ([self.hourArr[row] integerValue] < [self.timeArr[3] integerValue]) {
+                        if ([self.hourArr[row%[self.dataArray[component] count]] integerValue] < [self.timeArr[3] integerValue]) {
                             [pickerView selectRow:[self.dataArray[component] indexOfObject:self.timeArr[component]] inComponent:component animated:YES];
                             // 如果选择的时大于当前时，就直接赋值
                         } else {
-                            self.hour = self.hourArr[row];
+                            self.hour = self.hourArr[row%[self.dataArray[component] count]];
                         }
                     }
                 }
@@ -284,30 +284,30 @@
         case 4: { // 分
             // 如果选择年大于当前年 就直接赋值时
             //            if ([self.year integerValue] > [self.timeArr[0] integerValue]) {
-            self.minute = self.minuteArr[row];
+            self.minute = self.minuteArr[row%[self.dataArray[component] count]];
             //                // 如果选择的年等于当前年，就判断月份
             //            } else if ([self.year integerValue] == [self.timeArr[0] integerValue]) {
             //                // 如果选择的月份大于当前月份 就直接复制时
             //                if ([self.month integerValue] > [self.timeArr[1] integerValue]) {
-            //                    self.minute = self.minuteArr[row];
+            //                    self.minute = self.minuteArr[row%[self.dataArray[component] count]];
             //                    // 如果选择的月份等于当前月份，就判断日
             //                } else if ([self.month integerValue] == [self.timeArr[1] integerValue]) {
             //                    // 如果选择的日大于当前日，就直接复制时
             //                    if ([self.day integerValue] > [self.timeArr[2] integerValue]) {
-            //                        self.minute = self.minuteArr[row];
+            //                        self.minute = self.minuteArr[row%[self.dataArray[component] count]];
             //                        // 如果选择的日等于当前日，就判断时
             //                    } else if ([self.day integerValue] == [self.timeArr[2] integerValue]) {
             //                        // 如果选择的时大于当前时，就直接赋值
             //                        if ([self.hour integerValue] > [self.timeArr[3] integerValue]) {
-            //                            self.minute = self.minuteArr[row];
+            //                            self.minute = self.minuteArr[row%[self.dataArray[component] count]];
             //                        // 如果选择的时等于当前时,就判断分
             //                        } else if ([self.hour integerValue] == [self.timeArr[3] integerValue]) {
             //                            // 如果选择的分小于当前分，就刷新分
-            //                            if ([self.minuteArr[row] integerValue] < [self.timeArr[4] integerValue]) {
+            //                            if ([self.minuteArr[row%[self.dataArray[component] count]] integerValue] < [self.timeArr[4] integerValue]) {
             //                                [pickerView selectRow:[self.dataArray[component] indexOfObject:self.timeArr[component]] inComponent:component animated:YES];
             //                            // 如果选择分大于当前分，就直接赋值
             //                            } else {
-            //                                self.minute = self.minuteArr[row];
+            //                                self.minute = self.minuteArr[row%[self.dataArray[component] count]];
             //                            }
             //                        }
             //                    }
@@ -327,13 +327,22 @@
     return 44;
 }
 /// UIPickerView返回每一行的View
--(UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
-    UILabel *myView = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width, 44)];
-    myView.font = [UIFont systemFontOfSize:15];
-    myView.textAlignment = NSTextAlignmentCenter;
-    myView.text = [self.dataArray[component] objectAtIndex:row%[self.dataArray[component] count]];
-    return myView;
+-(UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
+    NSLog(@"%@", view);
+    NSLog(@"\nrow=%ld  \n component=%ld  \n[self.dataArray[component] count]=%ld  \n row[self.dataArray[component] count]=%ld", row, component, [self.dataArray[component] count], row%[self.dataArray[component] count]);
+//    if (!view) {
+//        view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 44)];
+//        view.backgroundColor = [UIColor whiteColor];
+        
+        UILabel *titleLbl = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width, 44)];
+        titleLbl.font = [UIFont systemFontOfSize:15];
+        titleLbl.textAlignment = NSTextAlignmentCenter;
+        titleLbl.text = [self.dataArray[component] objectAtIndex:row%[self.dataArray[component] count]];
+//        [view addSubview:titleLbl];
+//    }
+    return titleLbl;
 }
+
 
 - (void)pickerViewLoaded:(NSInteger)component row:(NSInteger)row{
     NSUInteger max = 16384;
