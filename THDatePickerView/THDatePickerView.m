@@ -109,6 +109,8 @@
     [self.pickerView selectRow:[self.dayArr indexOfObject:[NSString stringWithFormat:@"%ld日", [self.day integerValue]]] inComponent:2 animated:YES];
     [self.pickerView selectRow:[self.hourArr indexOfObject:[NSString stringWithFormat:@"%ld时", [self.hour integerValue]]] inComponent:3 animated:YES];
     [self.pickerView selectRow:self.minuteArr.count / 2 inComponent:4 animated:YES];
+    
+    
 }
 
 #pragma mark - 点击方法
@@ -116,25 +118,25 @@
 - (void)saveBtnClick {
     NSLog(@"点击了保存");
     
-//    NSInteger index = [self compareDate:[self.timeArr componentsJoinedByString:@","] withDate:[NSString stringWithFormat:@"%@,%@,%@,%@,%@", self.year, self.month, self.day, self.hour, self.minute]];
-//    switch (index) {
-//        case -1: {
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"面试时间小于当前时间，请重新选择" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
-//        } break;
-//        case 0:
-//        case 1: {
-//            if (self.minute.length == 2) {
-//                self.selectStr = [NSString stringWithFormat:@"%ld-%ld-%ld  %ld:0%ld", [self.year integerValue], [self.month integerValue], [self.day integerValue], [self.hour integerValue], [self.minute integerValue]];
-//            } else {
-//                self.selectStr = [NSString stringWithFormat:@"%ld-%ld-%ld  %ld:%ld", [self.year integerValue], [self.month integerValue], [self.day integerValue], [self.hour integerValue], [self.minute integerValue]];
-//            }
+    NSInteger index = [self compareDate:[self.timeArr componentsJoinedByString:@","] withDate:[NSString stringWithFormat:@"%@,%@,%@,%@,%@", self.year, self.month, self.day, self.hour, self.minute]];
+    switch (index) {
+        case -1: {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"面试时间小于当前时间，请重新选择" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
+        } break;
+        case 0:
+        case 1: {
+            if (self.minute.length == 2) {
+                self.selectStr = [NSString stringWithFormat:@"%ld-%ld-%ld  %ld:0%ld", [self.year integerValue], [self.month integerValue], [self.day integerValue], [self.hour integerValue], [self.minute integerValue]];
+            } else {
+                self.selectStr = [NSString stringWithFormat:@"%ld-%ld-%ld  %ld:%ld", [self.year integerValue], [self.month integerValue], [self.day integerValue], [self.hour integerValue], [self.minute integerValue]];
+            }
             if ([self.delegate respondsToSelector:@selector(datePickerViewSaveBtnClickDelegate:)]) {
                 [self.delegate datePickerViewSaveBtnClickDelegate:self.selectStr];
             }
-//        } break;
-//        default: break;
-//    }
+        } break;
+        default: break;
+    }
 }
 /// 取消按钮点击方法
 - (void)cancelBtnClick {
@@ -329,17 +331,12 @@
 /// UIPickerView返回每一行的View
 -(UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
     NSLog(@"%@", view);
-    NSLog(@"\nrow=%ld  \n component=%ld  \n[self.dataArray[component] count]=%ld  \n row[self.dataArray[component] count]=%ld", row, component, [self.dataArray[component] count], row%[self.dataArray[component] count]);
-//    if (!view) {
-//        view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 44)];
-//        view.backgroundColor = [UIColor whiteColor];
         
-        UILabel *titleLbl = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width, 44)];
-        titleLbl.font = [UIFont systemFontOfSize:15];
-        titleLbl.textAlignment = NSTextAlignmentCenter;
-        titleLbl.text = [self.dataArray[component] objectAtIndex:row%[self.dataArray[component] count]];
-//        [view addSubview:titleLbl];
-//    }
+    UILabel *titleLbl = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width, 44)];
+    titleLbl.font = [UIFont systemFontOfSize:15];
+    titleLbl.textAlignment = NSTextAlignmentCenter;
+    titleLbl.text = [self.dataArray[component] objectAtIndex:row%[self.dataArray[component] count]];
+
     return titleLbl;
 }
 
