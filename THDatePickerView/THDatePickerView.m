@@ -110,7 +110,8 @@
     [self.pickerView selectRow:[self.hourArr indexOfObject:[NSString stringWithFormat:@"%ld时", [self.hour integerValue]]] inComponent:3 animated:YES];
     [self.pickerView selectRow:self.minuteArr.count / 2 inComponent:4 animated:YES];
     
-    
+    /// 刷新日
+    [self refreshDay];
 }
 
 #pragma mark - 点击方法
@@ -164,6 +165,8 @@
                 [pickerView selectRow:[self.dataArray[component] indexOfObject:self.timeArr[component]] inComponent:component animated:YES];
             } else {
                 self.year = self.yearArr[row%[self.dataArray[component] count]];
+                /// 刷新日
+                [self refreshDay];
                 /// 根据当前选择的年份和月份获取当月的天数
                 NSString *dayStr = [self getDayNumber:[self.year integerValue] month:[self.month integerValue]];
                 if (self.dayArr.count > [dayStr integerValue]) {
@@ -179,6 +182,8 @@
             if ([self.year integerValue] > [self.timeArr[0] integerValue]) {
                 
                 self.month = self.monthArr[row%[self.dataArray[component] count]];
+                /// 刷新日
+                [self refreshDay];
                 
                 /// 根据当前选择的年份和月份获取当月的天数
                 NSString *dayStr = [self getDayNumber:[self.year integerValue] month:[self.month integerValue]];
@@ -186,6 +191,7 @@
                     if (self.day.integerValue > [dayStr integerValue]) {
                         [pickerView selectRow:[self.dataArray[2] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:2 animated:YES];
                         self.day = [dayStr stringByAppendingString:@"日"];
+                        
                     }
                 }
                 // 如果选择的年等于当前年，就判断月份
@@ -196,6 +202,8 @@
                     // 如果选择的月份大于当前月份，就直接赋值月份
                 } else {
                     self.month = self.monthArr[row%[self.dataArray[component] count]];
+                    /// 刷新日
+                    [self refreshDay];
                     
                     /// 根据当前选择的年份和月份获取当月的天数
                     NSString *dayStr = [self getDayNumber:[self.year integerValue] month:[self.month integerValue]];
@@ -442,6 +450,17 @@
         default: NSLog(@"erorr dates %@, %@", dt2, dt1);break;
     }
     return ci;
+}
+
+
+- (void)refreshDay {
+    NSMutableArray *arr = [NSMutableArray array];
+    for (int i = 1; i < [self getDayNumber:self.year.integerValue month:self.month.integerValue].integerValue + 1; i ++) {
+        [arr addObject:[NSString stringWithFormat:@"%d日", i]];
+    }
+    
+    [self.dataArray replaceObjectAtIndex:2 withObject:arr];
+    [self.pickerView reloadComponent:2];
 }
 
 - (NSString *)getDayNumber:(NSInteger)year month:(NSInteger)month{
