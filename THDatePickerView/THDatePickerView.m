@@ -98,16 +98,16 @@
 
 - (void)show {
     self.year = self.timeArr[0];
-    self.month = self.timeArr[1];
-    self.day = self.timeArr[2];
-    self.hour = self.timeArr[3];
+    self.month = [NSString stringWithFormat:@"%ld月", [self.timeArr[1] integerValue]];
+    self.day = [NSString stringWithFormat:@"%ld日", [self.timeArr[2] integerValue]];
+    self.hour = [NSString stringWithFormat:@"%ld时", [self.timeArr[3] integerValue]];
     self.minute = self.minuteArr[self.minuteArr.count / 2];
     
     [self.pickerView selectRow:[self.yearArr indexOfObject:self.year] inComponent:0 animated:YES];
     /// 重新格式化转一下，是因为如果是09月/日/时，数据源是9月/日/时,就会出现崩溃
-    [self.pickerView selectRow:[self.monthArr indexOfObject:[NSString stringWithFormat:@"%ld月", [self.month integerValue]]] inComponent:1 animated:YES];
-    [self.pickerView selectRow:[self.dayArr indexOfObject:[NSString stringWithFormat:@"%ld日", [self.day integerValue]]] inComponent:2 animated:YES];
-    [self.pickerView selectRow:[self.hourArr indexOfObject:[NSString stringWithFormat:@"%ld时", [self.hour integerValue]]] inComponent:3 animated:YES];
+    [self.pickerView selectRow:[self.monthArr indexOfObject:self.month] inComponent:1 animated:YES];
+    [self.pickerView selectRow:[self.dayArr indexOfObject:self.day] inComponent:2 animated:YES];
+    [self.pickerView selectRow:[self.hourArr indexOfObject:self.hour] inComponent:3 animated:YES];
     [self.pickerView selectRow:self.minuteArr.count / 2 inComponent:4 animated:YES];
     
     /// 刷新日
@@ -119,25 +119,15 @@
 - (void)saveBtnClick {
     NSLog(@"点击了保存");
     
-//    NSInteger index = [self compareDate:[self.timeArr componentsJoinedByString:@","] withDate:[NSString stringWithFormat:@"%@,%@,%@,%@,%@", self.year, self.month, self.day, self.hour, self.minute]];
-//    switch (index) {
-//        case -1: {
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"面试时间小于当前时间，请重新选择" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
-//        } break;
-//        case 0:
-//        case 1: {
-//            if (self.minute.length == 2) {
-//                self.selectStr = [NSString stringWithFormat:@"%ld-%ld-%ld  %ld:0%ld", [self.year integerValue], [self.month integerValue], [self.day integerValue], [self.hour integerValue], [self.minute integerValue]];
-//            } else {
-                self.selectStr = [NSString stringWithFormat:@"%ld-%ld-%ld  %ld:%ld", [self.year integerValue], [self.month integerValue], [self.day integerValue], [self.hour integerValue], [self.minute integerValue]];
-//            }
-            if ([self.delegate respondsToSelector:@selector(datePickerViewSaveBtnClickDelegate:)]) {
-                [self.delegate datePickerViewSaveBtnClickDelegate:self.selectStr];
-            }
-//        } break;
-//        default: break;
-//    }
+    NSString *month = self.month.length == 3 ? [NSString stringWithFormat:@"%ld", self.month.integerValue] : [NSString stringWithFormat:@"0%ld", self.month.integerValue];
+    NSString *day = self.day.length == 3 ? [NSString stringWithFormat:@"%ld", self.day.integerValue] : [NSString stringWithFormat:@"0%ld", self.day.integerValue];
+    NSString *hour = self.hour.length == 3 ? [NSString stringWithFormat:@"%ld", self.hour.integerValue] : [NSString stringWithFormat:@"0%ld", self.hour.integerValue];
+    NSString *minute = self.minute.length == 3 ? [NSString stringWithFormat:@"%ld", self.minute.integerValue] : [NSString stringWithFormat:@"0%ld", self.minute.integerValue];
+    
+    self.selectStr = [NSString stringWithFormat:@"%ld-%@-%@  %@:%@", [self.year integerValue], month, day, hour, minute];
+    if ([self.delegate respondsToSelector:@selector(datePickerViewSaveBtnClickDelegate:)]) {
+        [self.delegate datePickerViewSaveBtnClickDelegate:self.selectStr];
+    }
 }
 /// 取消按钮点击方法
 - (void)cancelBtnClick {
