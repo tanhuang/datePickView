@@ -31,6 +31,9 @@
     THDatePickerView *dateView = [[THDatePickerView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 300)];
     dateView.delegate = self;
     dateView.title = @"请选择时间";
+    dateView.isSlide = NO;
+    dateView.date = @"2017-03-23 12:43";
+    dateView.minuteInterval = 1;
     [self.view addSubview:dateView];
     self.dateView = dateView;
 }
@@ -58,6 +61,7 @@
     [UIView animateWithDuration:0.3 animations:^{
         self.dateView.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 300);
     }];
+    
 }
 
 /**
