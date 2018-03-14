@@ -65,10 +65,11 @@
     self.isSlide = YES;
     self.minuteInterval = 5;
 
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
     NSDate *date = [NSDate date];
-    self.date = [formatter stringFromDate:date];
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc]init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+
+    self.date = [dateFormatter stringFromDate:date];
 }
 
 
@@ -200,13 +201,12 @@
         case 0: { // 年
             
             NSString *year_integerValue = self.yearArr[row%[self.dataArray[component] count]];
-            
+            if (!self.isSlide) {
+                self.year = year_integerValue;
+                return;
+            }
             if (year_integerValue.integerValue < time_integerValue) {
-                if (self.isSlide) {
-                    [pickerView selectRow:[self.dataArray[component] indexOfObject:self.timeArr[component]] inComponent:component animated:YES];
-                } else {
-                    self.year = year_integerValue;
-                }
+                [pickerView selectRow:[self.dataArray[component] indexOfObject:self.timeArr[component]] inComponent:component animated:YES];
             } else {
                 self.year = year_integerValue;
                 /// 刷新日
@@ -215,12 +215,8 @@
                 NSString *dayStr = [self getDayNumber:[self.year integerValue] month:[self.month integerValue]];
                 if (self.dayArr.count > [dayStr integerValue]) {
                     if (self.day.integerValue > [dayStr integerValue]) {
-                        if (self.isSlide) {
-                            [pickerView selectRow:[self.dataArray[2] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:2 animated:YES];
-                            self.day = [dayStr stringByAppendingString:@"日"];
-                        } else {
-                            self.year = year_integerValue;
-                        }
+                        [pickerView selectRow:[self.dataArray[2] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:2 animated:YES];
+                        self.day = [dayStr stringByAppendingString:@"日"];
                     }
                 }
             }
@@ -228,13 +224,18 @@
         case 1: { // 月
             
             NSString *month_value = self.monthArr[row%[self.dataArray[component] count]];
-            
+
+            if (!self.isSlide) {
+                self.month = month_value;
+                /// 刷新日
+                [self refreshDay];
+                return;
+            }
+
             // 如果选择年大于当前年 就直接赋值月
             if ([self.year integerValue] > [self.timeArr[0] integerValue]) {
                 
                 self.month = month_value;
-                /// 刷新日
-                [self refreshDay];
                 
                 /// 根据当前选择的年份和月份获取当月的天数
                 NSString *dayStr = [self getDayNumber:[self.year integerValue] month:[self.month integerValue]];
@@ -260,30 +261,33 @@
                     // 如果选择的月份大于当前月份，就直接赋值月份
                 } else {
                     self.month = month_value;
-                    /// 刷新日
-                    [self refreshDay];
-                    
+
                     /// 根据当前选择的年份和月份获取当月的天数
                     NSString *dayStr = [self getDayNumber:[self.year integerValue] month:[self.month integerValue]];
                     if (self.dayArr.count > dayStr.integerValue) {
                         if (self.day.integerValue > dayStr.integerValue) {
-                            if (self.isSlide) {
-                                [pickerView selectRow:[self.dataArray[2] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:2 animated:YES];
-                                self.day = [dayStr stringByAppendingString:@"日"];
-                            } else {
-                                self.month = month_value;
-                            }
+                            [pickerView selectRow:[self.dataArray[2] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:2 animated:YES];
+                            self.day = [dayStr stringByAppendingString:@"日"];
                         }
                     }
                 }
             }
+
+            /// 刷新日
+            [self refreshDay];
+
         } break;
         case 2: { // 日
             /// 根据当前选择的年份和月份获取当月的天数
             NSString *dayStr = [self getDayNumber:[self.year integerValue] month:[self.month integerValue]];
             // 如果选择年大于当前年 就直接赋值日
             NSString *day_value = self.dayArr[row%[self.dataArray[component] count]];
-            NSLog(@"%ld", self.dayArr.count);
+
+            if (!self.isSlide) {
+                self.day = day_value;
+                return;
+            }
+
             if ([self.year integerValue] > [self.timeArr[0] integerValue]) {
                 if (self.dayArr.count <= [dayStr integerValue]) {
                     self.day = day_value;
@@ -291,11 +295,7 @@
                     if (day_value.integerValue <= [dayStr integerValue]) {
                         self.day = day_value;
                     } else {
-                        if (self.isSlide) {
-                            [pickerView selectRow:[self.dataArray[component] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:component animated:YES];
-                        } else {
-                            self.day = day_value;
-                        }
+                        [pickerView selectRow:[self.dataArray[component] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:component animated:YES];
                     }
                 }
                 // 如果选择的年等于当前年，就判断月份
@@ -308,11 +308,7 @@
                         if (day_value.integerValue <= [dayStr integerValue]) {
                             self.day = day_value;
                         } else {
-                            if (self.isSlide) {
-                                [pickerView selectRow:[self.dataArray[component] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:component animated:YES];
-                            } else {
-                                self.day = day_value;
-                            }
+                            [pickerView selectRow:[self.dataArray[component] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:component animated:YES];
                         }
                     }
                     // 如果选择的月份等于当前月份，就判断日
@@ -332,11 +328,7 @@
                             if ([self.dayArr[row%[self.dataArray[component] count]] integerValue] <= [dayStr integerValue]) {
                                 self.day = day_value;
                             } else {
-                                if (self.isSlide) {
-                                    [pickerView selectRow:[self.dataArray[component] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:component animated:YES];
-                                } else {
-                                    self.day = day_value;
-                                }
+                                [pickerView selectRow:[self.dataArray[component] indexOfObject:[dayStr stringByAppendingString:@"日"]] inComponent:component animated:YES];
                             }
                         }
                     }
@@ -345,6 +337,10 @@
         } break;
         case 3: { // 时
             NSString *hour_value = self.hourArr[row%[self.dataArray[component] count]];
+            if (!self.isSlide) {
+                self.hour = hour_value;
+                return;
+            }
             // 如果选择年大于当前年 就直接赋值时
             if ([self.year integerValue] > [self.timeArr[0] integerValue]) {
                 self.hour = hour_value;
@@ -362,11 +358,7 @@
                     } else if ([self.day integerValue] == [self.timeArr[2] integerValue]) {
                         // 如果选择的时小于当前时，就刷新到当前时
                         if ([self.hourArr[row%[self.dataArray[component] count]] integerValue] < [self.timeArr[3] integerValue]) {
-                            if (self.isSlide) {
-                                [pickerView selectRow:[self.dataArray[component] indexOfObject:self.timeArr[component]] inComponent:component animated:YES];
-                            } else {
-                                self.hour = hour_value;
-                            }
+                            [pickerView selectRow:[self.dataArray[component] indexOfObject:self.timeArr[component]] inComponent:component animated:YES];
                             // 如果选择的时大于当前时，就直接赋值
                         } else {
                             self.hour = hour_value;

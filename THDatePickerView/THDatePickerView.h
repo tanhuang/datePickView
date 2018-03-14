@@ -39,7 +39,10 @@
 
 @property (weak, nonatomic) id <THDatePickerViewDelegate> delegate;
 
-/// 显示
+
+/**
+ 显示  必须调用
+ */
 - (void)show;
 
 @end
