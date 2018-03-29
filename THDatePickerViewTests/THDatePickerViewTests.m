@@ -2,8 +2,8 @@
 //  THDatePickerViewTests.m
 //  THDatePickerViewTests
 //
-//  Created by Apple on 2016/11/29.
-//  Copyright © 2016年 Apple. All rights reserved.
+//  Created by 希达 on 2018/3/29.
+//  Copyright © 2018年 Tan.huang. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
