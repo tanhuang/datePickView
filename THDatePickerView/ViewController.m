@@ -41,6 +41,7 @@
 // 显示
 - (IBAction)timerBrnClick:(id)sender {
     self.btn.hidden = NO;
+    
     [UIView animateWithDuration:0.3 animations:^{
         self.dateView.frame = CGRectMake(0, self.view.frame.size.height - 300, self.view.frame.size.width, 300);
         [self.dateView show];
